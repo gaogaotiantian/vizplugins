@@ -16,8 +16,7 @@ release:
 	python -m twine upload dist/*
 
 lint:
-	flake8 src tests --count --select=E9,F63,F7,F82 --show-source --statistics
-	flake8 src tests --exclude tests/data/ --count --exit-zero --statistic --ignore=E501,E122,E126,E127,E128,W503
+	flake8 src/ tests/ --count --ignore=W503 --max-line-length=127 --statistics
 
 test:
 	python -m unittest

@@ -22,6 +22,10 @@ lint:
 test:
 	python -m unittest
 
+coverage:
+	env COVERAGE_RUN=True coverage run --parallel-mode --concurrency=multiprocessing -m unittest && coverage combine
+	coverage report -m -i --include=*/vizplugins/*.py --omit=*tests*,*viztracer*,*psutil*
+
 clean:
 	rm -rf __pycache__
 	rm -rf tests/__pycache__

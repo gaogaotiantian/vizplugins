@@ -18,7 +18,6 @@ class PsutilCpuPercentage(VizPluginBase):
         self.actions = mp.Queue()
         self.data = mp.Queue()
         self.interval = 0.02
-        print(arg)
 
     def message(self, m_type, payload):
         if m_type == "event":
@@ -37,7 +36,6 @@ class PsutilCpuPercentage(VizPluginBase):
         return {}
 
     def generate_process(self):
-        print(os.getpid())
         self.cpu_process = mp.Process(target=MonitorCPU(self.actions, self.data, self.interval), daemon=True)
         self.cpu_process.start()
         return {}
@@ -51,22 +49,23 @@ class PsutilCpuPercentage(VizPluginBase):
         return {}
 
     def save_data(self):
-        res = self.send_action("get-data")
-        self.cpu_percents = res["cpu_percent"]
-        self.times = res["times"]
+        self.ret = self.send_action("get-data")["data"]
         return {"action": "handle_data", "handler": self.append_data}
 
     def append_data(self, data):
-        print(self.cpu_percents)
-        for i in range(len(self.cpu_percents)):
-            d = {"name": "cpu_percentage", "ph": "C", "ts": self.times[i] * (10**6),
-                 "args": {"cpu_percent": self.cpu_percents[i]},
-                 "pid": os.getpid(), "tid": os.getpid()}
-            print(d)
+        pid = os.getpid()
+        for t, cpu_percent in self.ret:
+            d = {"name": "cpu_percentage",
+                 "ph": "C",
+                 "ts": t * (1e6),
+                 "args": {"cpu_percent": cpu_percent},
+                 "pid": pid,
+                 "tid": pid}
             data["traceEvents"].append(d)
 
     def terminate(self):
         self.send_action("terminate")
+        self.cpu_process.join()
         return {"success": True}
 
     def send_action(self, message):
@@ -83,33 +82,41 @@ class MonitorCPU:
 
     def __call__(self):
         p = psutil.Process(os.getppid())
-        print(os.getppid())
         p.cpu_percent()
         cpu_percent = []
         times = []
         while True:
+            data = {}
             if not self.actions.empty():
                 action = self.actions.get()
                 if action == "start":
                     self.state = "running"
                     times.append(time.monotonic())
-                    self.data.put({})
-                    time.sleep(self.interval)
                 elif action == "stop":
                     self.state = "stopped"
+                    # to indicate the end of recording(otherwise the last data point will not be shown)
                     cpu_percent.append(0)
-                    self.data.put({})
                 elif action == "get-data":
                     if self.state != "stopped":
                         self.state = "stopped"
                         cpu_percent.append(0)
-                    self.data.put({"cpu_percent": cpu_percent, "times": times})
+                    data["data"] = self.zip(cpu_percent, times)
                     cpu_percent = []
                     times = []
                 elif action == "terminate":
                     break
+                self.data.put(data)
             if self.state == "running":
+                time.sleep(self.interval)
                 cpu_percent.append(p.cpu_percent())
                 times.append(time.monotonic())
+            else:
                 time.sleep(self.interval)
         self.data.put({})
+        time.sleep(0.01)  # wait until the dict is put in the queue
+
+    def zip(self, cpu, times):
+        res = []
+        for i in range(min(len(times), len(cpu))):
+            res.append((times[i], cpu[i]))
+        return res

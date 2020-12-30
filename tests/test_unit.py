@@ -11,9 +11,9 @@ class TestBasics(BaseTmpl):
     def test_process_state(self):
         action = mp.Queue()
         data = mp.Queue()
+        p = MonitorCPU(action, data, 0.05)
         action.put("get-data")
         action.put("terminate")
-        p = MonitorCPU(action, data, 0.05)
         p.state = "running"
         p()
         self.assertEqual(p.state, "stopped")

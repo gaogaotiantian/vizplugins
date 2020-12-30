@@ -41,23 +41,21 @@ class PsutilCpuPercentage(VizPluginBase):
         return {}
 
     def start_recording(self):
-        self.send_action("start")
-        return {}
+        return self.send_action("start")
 
     def stop_recording(self):
-        self.send_action("stop")
-        return {}
+        return self.send_action("stop")
 
     def save_data(self):
-        self.ret = self.send_action("get-data")["data"]
+        self.recording = self.send_action("get-data")
         return {"action": "handle_data", "handler": self.append_data}
 
     def append_data(self, data):
         pid = os.getpid()
-        for t, cpu_percent in self.ret:
+        for ts, cpu_percent in self.recording["data"]:
             d = {"name": "cpu_percentage",
                  "ph": "C",
-                 "ts": t * (1e6),
+                 "ts": ts * (1e6),
                  "args": {"cpu_percent": cpu_percent},
                  "pid": pid,
                  "tid": pid}
@@ -100,23 +98,14 @@ class MonitorCPU:
                     if self.state != "stopped":
                         self.state = "stopped"
                         cpu_percent.append(0)
-                    data["data"] = self.zip(cpu_percent, times)
+                    data["data"] = list(zip(times, cpu_percent))
                     cpu_percent = []
                     times = []
                 elif action == "terminate":
                     break
                 self.data.put(data)
+            time.sleep(self.interval)
             if self.state == "running":
-                time.sleep(self.interval)
                 cpu_percent.append(p.cpu_percent())
                 times.append(time.monotonic())
-            else:
-                time.sleep(self.interval)
         self.data.put({})
-        time.sleep(0.01)  # wait until the dict is put in the queue
-
-    def zip(self, cpu, times):
-        res = []
-        for i in range(min(len(times), len(cpu))):
-            res.append((times[i], cpu[i]))
-        return res

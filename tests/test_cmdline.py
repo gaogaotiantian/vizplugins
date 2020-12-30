@@ -26,7 +26,7 @@ class TestCommandLine(CmdlineTmpl):
                 if entry["ph"] == "C" and entry["name"] == "cpu_percentage":
                     counter += 1
             self.assertGreater(counter, 0)
-        self.template(["viztracer", "--plugins", "vizplugins.cpu_time", "-o", "result.json", "cmdline_test.py"],
+        self.template(["viztracer", "--plugins", "vizplugins.cpu_usage", "-o", "result.json", "cmdline_test.py"],
                       script=file_sleep,
                       expected_output_file="result.json",
                       concurrency="multiprocessing",

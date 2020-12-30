@@ -1,5 +1,5 @@
 from .base_tmpl import BaseTmpl
-from vizplugins.cpu_time import PsutilCpuPercentage, MonitorCPU
+from vizplugins.cpu_usage import PsutilCpuPercentage, MonitorCPU
 import multiprocessing as mp
 
 
@@ -16,4 +16,6 @@ class TestBasics(BaseTmpl):
         action.put("terminate")
         p.state = "running"
         p()
+        action.close()
+        action.join_thread()
         self.assertEqual(p.state, "stopped")

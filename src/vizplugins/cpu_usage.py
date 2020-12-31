@@ -10,7 +10,6 @@ from viztracer.vizplugin import VizPluginBase
 
 
 def get_vizplugin(arg):
-    print(arg)
     return PsutilCpuPercentage(arg)
 
 

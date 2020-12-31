@@ -10,7 +10,6 @@ from viztracer.vizplugin import VizPluginBase
 
 
 def get_vizplugin(arg):
-    print(arg)
     return PsutilCpuPercentage(arg)
 
 
@@ -24,7 +23,7 @@ class PsutilCpuPercentage(VizPluginBase):
         self.parser.add_argument("-f", help="The frequency of sampling cpu usage")
         self.options = self.parser.parse_args(arg.split()[1:])
         if self.options.f:
-            self.interval = 1 / int(self.options.f)
+            self.interval = 1 / float(self.options.f)
 
     def message(self, m_type, payload):
         if m_type == "event":

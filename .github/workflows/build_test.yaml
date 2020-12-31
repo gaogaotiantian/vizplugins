@@ -56,7 +56,7 @@ jobs:
     - name: Generate coverage report
       run: |
         coverage run --parallel-mode --concurrency=multiprocessing -m unittest && coverage combine
-        coverage report -m -i --include=*/vizplugins/*.py --omit=*tests*,*viztracer*,*psutil*
+        coverage xml -i --include=*/vizplugins/*.py --omit=*tests*,*viztracer*,*psutil*
       env:
         COVERAGE_RUN: True
     - name: Upload report to Codecov

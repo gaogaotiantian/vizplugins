@@ -19,6 +19,9 @@ class PsutilCpuPercentage(VizPluginBase):
         self.data = mp.Queue()
         self.interval = 0.02
 
+    def support_version(self):
+        return "0.11.0"
+
     def message(self, m_type, payload):
         if m_type == "event":
             if payload["when"] == "initialize":

@@ -28,14 +28,14 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install flake8 setuptools wheel twine coverage
-        pip install git+https://github.com/gaogaotiantian/viztracer
+        pip install viztracer
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Install dependencies on Windows
       if: matrix.os == 'windows-latest'
       run: |
         python -m pip install --upgrade pip
         pip install flake8 setuptools wheel twine coverage
-        pip install git+https://github.com/gaogaotiantian/viztracer
+        pip install viztracer
         if (Test-Path -Path '.\requirements.txt' -PathType Leaf) {pip install -r requirements.txt}
     - name: Lint with flake8
       run: |

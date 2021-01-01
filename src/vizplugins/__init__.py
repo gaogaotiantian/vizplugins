@@ -2,4 +2,4 @@
 # For details: https://github.com/gaogaotiantian/vizplugins/blob/master/NOTICE.txt
 
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"

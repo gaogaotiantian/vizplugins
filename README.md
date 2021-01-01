@@ -24,6 +24,14 @@ viztracer --plugin vizplugins.cpu_usage -- my_script.py arg1 arg2
 
 which will generate a ```result.html``` file in the directory you run this command, which you can open with Chrome.
 
+The plugin samples cpu usage per 0.02s by default, but you can explicitly indicate the desired frequency at which to sample data per second
+
+```
+viztracer --plugin "vizplugins.cpu_usage -f 20" -- my_script.py arg1 arg2
+```
+
+which will sample data approximately 20 times per second, with a sampling interval of 0.05 second.
+
 
 ## Example
 

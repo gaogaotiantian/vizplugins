@@ -19,3 +19,9 @@ class TestBasics(BaseTmpl):
         action.close()
         action.join_thread()
         self.assertEqual(p.state, "stopped")
+
+    def test_frequency_option(self):
+        c1 = PsutilCpuPercentage("vizplugins.cpu_usage")
+        self.assertEqual(c1.interval, 0.02)
+        c2 = PsutilCpuPercentage("vizplugins.cpu_usage -f 20")
+        self.assertAlmostEqual(c2.interval, 0.05)

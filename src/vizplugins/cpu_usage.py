@@ -5,6 +5,7 @@ import multiprocessing as mp
 import psutil
 import os
 import time
+import argparse
 from viztracer.vizplugin import VizPluginBase
 
 
@@ -18,6 +19,11 @@ class PsutilCpuPercentage(VizPluginBase):
         self.actions = mp.Queue()
         self.data = mp.Queue()
         self.interval = 0.02
+        self.parser = argparse.ArgumentParser(prog="vizplugins.cpu_usage")
+        self.parser.add_argument("-f", help="The frequency of sampling cpu usage")
+        self.options = self.parser.parse_args(arg.split()[1:])
+        if self.options.f:
+            self.interval = 1 / float(self.options.f)
 
     def support_version(self):
         return "0.11.0"

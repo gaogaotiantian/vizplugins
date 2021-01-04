@@ -10,7 +10,7 @@ __version__ = "0.1.1"
 
 def get_vizplugin(arg):
     parser = argparse.ArgumentParser(prog="vizplugins")
-    parser.add_argument("-f", help="The frequency of sampling cpu usage")
+    parser.add_argument("-f", help="The frequency of sampling cpu usage", default=50)
     parser.add_argument("--cpu_usage", action="store_true")
     parser.add_argument("--memory_usage", action="store_true")
     inputs = parser.parse_args(arg.split()[1:])
@@ -19,7 +19,5 @@ def get_vizplugin(arg):
         options["cpu_usage"] = True
     if inputs.memory_usage:
         options["memory_usage"] = True
-    if inputs.f:
-        return PsutilMonitor(options, 1 / float(inputs.f))
-    else:
-        return PsutilMonitor(options, 0.02)
+    interval = 1 / float(inputs.f)
+    return PsutilMonitor(options, interval)

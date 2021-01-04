@@ -1,3 +1,6 @@
+# licensed under the apache license: http://www.apache.org/licenses/license-2.0
+# for details: https://github.com/gaogaotiantian/vizplugins/blob/master/notice.txt
+
 import psutil
 import os
 import time

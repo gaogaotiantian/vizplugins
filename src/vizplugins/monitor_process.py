@@ -32,13 +32,11 @@ class MonitorProcess:
                 elif action == "stop":
                     self.state = "stopped"
                     # to indicate the end of recording(otherwise the last data point will not be shown)
-                    for k in self.options.keys():
-                        self.record_handlers[k]()
+                    self.record_data()
                 elif action == "get-data":
                     if self.state != "stopped":
                         self.state = "stopped"
-                        for k in self.options.keys():
-                            self.record_handlers[k]()
+                        self.record_data()
                     data = self.pack_data()
                     self.init_recording()
                 elif action == "terminate":
@@ -46,10 +44,13 @@ class MonitorProcess:
                 self.data.put(data)
             time.sleep(self.interval)
             if self.state == "running":
-                for k in self.options.keys():
-                    self.record_handlers[k]()
+                self.record_data()
                 self.recordings["ts"].append(time.monotonic())
         self.data.put({})
+
+    def record_data(self):
+        for k in self.options.keys():
+            self.record_handlers[k]()
 
     def cpu_usage_handler(self):
         self.recordings["cpu_percent"].append(self.parent.cpu_percent())

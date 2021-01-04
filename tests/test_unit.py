@@ -11,7 +11,7 @@ class TestBasics(BaseTmpl):
     def test_process_state(self):
         action = mp.Queue()
         data = mp.Queue()
-        p = vizplugins.MonitorProcess.MonitorProcess(action, data, {"cpu_usage": True, "memory_usage": True}, 0.05)
+        p = vizplugins.monitor_process.MonitorProcess(action, data, {"cpu_usage": True, "memory_usage": True}, 0.05)
         action.put("get-data")
         action.put("terminate")
         p.state = "running"

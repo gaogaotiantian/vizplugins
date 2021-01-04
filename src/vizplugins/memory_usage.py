@@ -6,10 +6,10 @@ from .psutil_monitor import PsutilMonitor
 
 
 def get_vizplugin(arg):
-    parser = argparse.ArgumentParser(prog="vizplugins.cpu_usage")
+    parser = argparse.ArgumentParser(prog="vizplugins.memory_usage")
     parser.add_argument("-f", help="The frequency of sampling cpu usage")
     inputs = parser.parse_args(arg.split()[1:])
-    options = {"cpu_usage": True}
+    options = {"memory_usage": True}
     interval = 0.02
     if inputs.f:
         interval = 1 / float(inputs.f)

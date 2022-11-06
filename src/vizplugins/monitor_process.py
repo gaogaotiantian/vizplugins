@@ -36,6 +36,11 @@ class MonitorProcess:
                     self.state = "stopped"
                     # to indicate the end of recording(otherwise the last data point will not be shown)
                     self.record_data()
+                    # Every time we get a stop, record the data and send it back
+                    # because we may never get the get-data command due to
+                    # early process termination
+                    data = self.pack_data()
+                    self.init_recording()
                 elif action == "get-data":
                     if self.state != "stopped":
                         self.state = "stopped"

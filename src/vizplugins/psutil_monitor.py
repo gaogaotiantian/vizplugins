@@ -17,7 +17,7 @@ class PsutilMonitor(VizPluginBase):
         self.recordings = []
 
     def support_version(self):
-        return "0.11.0"
+        return "0.15.6"
 
     def message(self, m_type, payload):
         if m_type == "event":

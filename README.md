@@ -35,7 +35,7 @@ which will sample data approximately 20 times per second, with a sampling interv
 You can also trace the memory usage and cpu usage by
 
 ```
-viztracer --plugin vizplugins --cpu_usage --memory_usage -- my_script.py arg1 arg2
+viztracer --plugin "vizplugins --cpu_usage --memory_usage" -- my_script.py arg1 arg2
 ```
 
 which will record both the cpu and memory usage.
